@@ -2,8 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const engines = require("consolidate");
 const paypal = require("paypal-rest-sdk");
+var path = require('path')
+
+var link = "http://192.168.11.104:3000/"
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.engine("ejs", engines.ejs);
 app.set("views", "./views");
@@ -32,8 +36,8 @@ app.get("/paypal", (req, res) => {
             payment_method: "paypal"
         },
         redirect_urls: {
-            return_url: "http://192.168.11.102:3000/success",
-            cancel_url: "http://192.168.11.102:3000/cancel"
+            return_url: link + "success",
+            cancel_url: link +  "cancel"
         },
         transactions: [
             {
@@ -42,7 +46,7 @@ app.get("/paypal", (req, res) => {
                         {
                             name: "item",
                             sku: "item",
-                            price: "1.00",
+                            price: "300.00",
                             currency: "USD",
                             quantity: 1
                         }
@@ -50,7 +54,7 @@ app.get("/paypal", (req, res) => {
                 },
                 amount: {
                     currency: "USD",
-                    total: "1.00"
+                    total: "300.00"
                 },
                 description: "This is the payment description."
             }
@@ -81,7 +85,7 @@ app.get("/success", (req, res) => {
             {
                 amount: {
                     currency: "USD",
-                    total: "1.00"
+                    total: "300.00"
                 }
             }
         ]
@@ -109,5 +113,5 @@ app.get("cancel", (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log("Server is running");
+    console.log("Server is running on port 3000/2 ");
 });
